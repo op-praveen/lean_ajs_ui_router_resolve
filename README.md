@@ -1,4 +1,4 @@
-# lean_ajs_ui_router_resolve
+# learn_ajs_ui_router_resolve
 learn how the ui-router work and resolve implement in angularjs
 
 Installation :
