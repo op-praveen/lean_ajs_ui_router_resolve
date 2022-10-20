@@ -1,0 +1,2 @@
+//here u will learn ui router with param
+ui router with resolve

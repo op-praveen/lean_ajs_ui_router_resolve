@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myAPp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+        integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.30/angular-ui-router.min.js"
+        integrity="sha512-HdDqpFK+5KwK5gZTuViiNt6aw/dBc3d0pUArax73z0fYN8UXiSozGNTo3MFx4pwbBPldf5gaMUq/EqposBQyWQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+    <h1>for op-100 branch prodiing more detail change</h1>
+    <button ui-sref="calc">Calc</button>
+    <ui-view></ui-view>
+    <script>
+        var app = angular.module("myAPp", ['ui.router']);
+        app.config(['$stateProvider', function ($stateProvider) {
+            $stateProvider
+                .state('calc', {
+                    url: '/calc',
+                    templateUrl: 'calc.html',
+                    controller: 'calcCtrl',
+                    // onEnter:function(){
+                    //     console.log('entering into state');
+                    // },
+                    // onExit:function(){
+                    //     console.log('Leaving the state');
+                    // },
+                })
+                .state('add', {
+                    url: '/add/:a/:b',
+                    templateUrl: 'result.htm',
+                    controller: 'addController',
+                    params: { a: null, b: null }
+                })
+                .state('multiply', {
+                    url: '/multiply/:a/:b',
+                    templateUrl: 'result.htm',
+                    controller: 'multiplyController',
+                    // params: { a: null, b: null },
+                    resolve: {
+                        result: function (dataService, $stateParams) {
+                            var a =$stateParams.a;
+                            var b =$stateParams.b;
+                            return dataService.multiply(a,b);
+                        }
+                    }
+                })
+                .state("root", {
+                    url: '/',
+                    template: '<strong>You are on root</strong>',
+                    controller: "rootCon",
+                    resolver($state) {
+                        $state.go('calc');
+                        return true;
+                    }
+                }).state("otherwise", {
+                    url: "*path",
+                    template: "No route available"
+                })
+        }]);
+        app.controller("calcCtrl", function ($state, $scope) {
+            $scope.a = 0;
+            $scope.b = 0;$scope.isLoading=true;
+            // $scope.res1=0;
+            $scope.res = function () {
+                $state.go('add', { a: 1, b: 2 });
+                // $scope.res1=parseInt($scope.a)+parseInt($scope.b);
+            };
+        });
+        app.controller("addController", function ($state, $scope, $stateParams, $timeout) {
+            console.log($stateParams);
+            $scope.result = parseInt($stateParams.a) + parseInt($stateParams.b);
+            $timeout(function () {
+                $scope.isLoading = false;
+            }, 3000);
+        });
+
+        app.controller("multiplyController", function ($state, $scope, $stateParams, $timeout,result) {
+            console.log($stateParams);
+            $scope.result = result.data;
+            // $scope.result = parseInt($stateParams.a) * parseInt($stateParams.b);
+            $timeout(function () {
+                $scope.isLoading = false;
+            }, 3000);
+        });
+        </script>
+    <script src="./dataService.js"></script>
+</body>
+
+</html>
